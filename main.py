@@ -6,15 +6,18 @@ SCREEN_HEIGHT = 600
 
 image = pygame.image.load("lentokone.png")
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-clock = pygame.time.Clock()
+FPS = pygame.time.Clock()
 run = True
 
+#koneen koko
+width = 17
+height = 9
+
 #koneen alkusijainti
-xpos = 50
-ypos = 50
-#liikkumisnopeus (2px/frame)
-step_x = 2
-step_y = 2
+xpos = 400
+ypos = 300
+#liikkumisnopeus (1px/frame)
+vel = 1
 
 while run:
     #tyhjentää ruudun edellisen framen muutokset
@@ -27,18 +30,37 @@ while run:
         if event.type == pygame.QUIT:
             run = False
     #tarkistaa onko kone ruudulla. jos ei, vaihtaa suuntaa
-    if xpos>SCREEN_WIDTH-20 or xpos<0:
-        step_x = -step_x
-    if ypos>SCREEN_HEIGHT-10 or ypos<0:
-        step_y = -step_y
-    #päivittää koneen sijainnin
-    xpos += step_x #liikuttaa oikealle
-    ypos += step_y #liikuttaa vasemmalle
+    keys = pygame.key.get_pressed() 
+      
+    # vasen nuoli painettuna
+    if keys[pygame.K_LEFT] and xpos>0: 
+          
+        # vähennys x-koordinaattiin 
+        xpos -= vel 
+          
+    # oikea nuoli painettuna 
+    if keys[pygame.K_RIGHT] and xpos<800-width: 
+          
+        # lisäys x-koordinaattiin 
+        xpos += vel 
+         
+    # ylös nuoli painettuna    
+    if keys[pygame.K_UP] and ypos>0: 
+          
+        # vähennys y-koordinaattiin 
+        ypos -= vel 
+          
+    # alas nuoli painettuna    
+    if keys[pygame.K_DOWN] and ypos<600-height: 
+        # lisäys y-koordinaattiin 
+        ypos += vel 
 
     #laittaa muutokset näytölle
-    pygame.display.flip()
+    pygame.display.update()
 
     #rajoittaa framet 60:een
-    clock.tick(60)
+    FPS.tick(60)
 
 pygame.quit()
+
+#https://dr0id.bitbucket.io/legacy/pygame_tutorials.html
