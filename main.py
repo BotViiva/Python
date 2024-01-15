@@ -23,6 +23,10 @@ while run:
     #tyhjentää ruudun edellisen framen muutokset
     screen.fill((0,0,0))
 
+    #10ms aikaviive
+    pygame.time.delay(10)
+
+    #piirtää lentokoneen näytölle
     screen.blit(image, (xpos,ypos))
 
     #tapa poistua loopista
