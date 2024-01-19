@@ -1,6 +1,7 @@
 import pygame;
 from sys import exit
 
+#pistetaulun luonti
 def score ():
     score_p1 = text_font.render(f'{scoreboard[1]}', False, (255, 255, 255))
     score_p1_rect = score_p1.get_rect(center = (window_size[0] // 2 - 70, 50))
@@ -8,6 +9,8 @@ def score ():
     score_p2_rect = score_p2.get_rect(center = (window_size[0] // 2 + 70, 50))
     window.blit(score_p1, score_p1_rect)
     window.blit(score_p2, score_p2_rect)
+
+
 pygame.init()
 
 
