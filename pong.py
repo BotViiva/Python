@@ -1,19 +1,25 @@
 import pygame;
 from sys import exit
 
-
+def score ():
+    score_p1 = text_font.render(f'{scoreboard[1]}', False, (255, 255, 255))
+    score_p1_rect = score_p1.get_rect(center = (window_size[0] // 2 - 70, 50))
+    score_p2 = text_font.render(f'{scoreboard[0]}', False, (255, 255, 255))
+    score_p2_rect = score_p2.get_rect(center = (window_size[0] // 2 + 70, 50))
+    window.blit(score_p1, score_p1_rect)
+    window.blit(score_p2, score_p2_rect)
 pygame.init()
+
 
 window_size = (800,600)
 window = pygame.display.set_mode((window_size))
 pygame.display.set_caption('Pong')
 FPS = pygame.time.Clock()
 run = True
-xpos = 400
-ypos = 300
 game_active = False
-font = pygame.font.Font('assets/Grand9K.ttf', 50)
-pygame.font.init
+text_font = pygame.font.Font('assets/Grand9K.ttf', 50)
+scoreboard = [0, 0]
+
 
 #peliobjektit
 paddle_width, paddle_height = (20,100)
@@ -23,7 +29,9 @@ ball_speed_y = (0)
 p1_paddle = pygame.Rect(window_size[0] - paddle_width, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
 p2_paddle = pygame.Rect(0, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
 ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
-scoreboard = [0, 0]
+
+#score_p1 = text_font.render(f'{scoreboard[0]}', False, (255, 255, 255))
+#score_p2 = text_font.render(f'{scoreboard[1]}', False, (255, 255, 255))
 
 
 
@@ -36,7 +44,7 @@ while run:
             exit()
 
 
-    #keys muuttuja
+    #keys muuttuja (key.get_pressed() tarkkailee kaikkia painettuja nappeja) 
     keys = pygame.key.get_pressed()    
     
     #vastustajan liikuttaminen
@@ -54,6 +62,10 @@ while run:
     # Liikuta palloa
     ball.x += ball_speed_x
     ball.y += ball_speed_y
+
+    #tarkista osuiko pallo ylä- tai alaseinään 
+    if ball.bottom > window_size[1] or ball.top < 0 :
+        ball_speed_y = -ball_speed_y
 
     #tarkista osuiko pallo maaliin
     if ball.x >= window_size[0] - ball_size:
@@ -134,10 +146,7 @@ while run:
         else:
             ball_speed_x = -ball_speed_x
         
-    #tarkista osuuko pallo ylä- tai alarajaan
-    if ball.top <= 0 or ball.bottom >= window_size[1]:
-        ball_speed_y = -ball_speed_y
-
+    
     #päivitä näyttö
     pygame.display.flip()
 
@@ -147,6 +156,8 @@ while run:
     pygame.draw.rect(window, (255, 255, 255), p2_paddle)
     pygame.draw.rect(window, (255, 255, 255), p1_paddle)
     pygame.draw.ellipse(window, (255, 255, 255), ball)
+    score()
+    
 
     #rajoittaa framet 60:een
     FPS.tick(60)
