@@ -90,72 +90,44 @@ while run:
     #tarkista osuuko pallo oikeaan mailaan
     if ball.colliderect(p1_paddle):
         
-        #muuttuja osuman sijainnille
-        collision_area = ball.y - p1_paddle.top + ball_size // 2
+        #muuttuja osuman sijainnille (tulos = -5/-4/-3/-2/-1/0/1/2/3/4/5/6)
+        collision_area = (ball.centery - p1_paddle.top + ball_size // 2 -50) // 10
+
+        #muuta nopeutta
+        ball_speed_x = -ball_speed_x
+        ball_speed_y = collision_area + ball_speed_y
+        print(collision_area, ball_speed_x, ball_speed_y)
         
-        #tarkista osuman sijainti ja muuta suunta ja nopeus
-        if collision_area >=20 and collision_area < 35:
-            ball_speed_x = -ball_speed_x
-            ball_speed_y = ball_speed_y - 0.5
-        elif collision_area >=0 and collision_area < 20:
-            ball_speed_x = -ball_speed_x
-            ball_speed_y = ball_speed_y - 1        
-        elif collision_area < 0:
-            ball_speed_x = -ball_speed_x
-            if ball_speed_y > 0:    
-                ball_speed_y = -ball_speed_y
-            else:
-                ball_speed_y = ball_speed_y + 1
-        elif collision_area >65 and collision_area <= 80:
-            ball_speed_x = -ball_speed_x
-            ball_speed_y = ball_speed_y + 0.5
-        elif collision_area >80 and collision_area <= 100:
-            ball_speed_x = -ball_speed_x
-            ball_speed_y = ball_speed_y + 1        
-        elif collision_area > 100:
-            ball_speed_x = -ball_speed_x
-            if ball_speed_y < 0:    
-                ball_speed_y = -ball_speed_y
-            else:
-                ball_speed_y = ball_speed_y -1
-        else:
-            ball_speed_x = -ball_speed_x
-    
+        #tarkista maksiminopeus
+        if ball_speed_y > 10:
+            ball_speed_y = 10
+        if ball_speed_y < -10:
+            ball_speed_y = -10
+        if ball_speed_x > 6:
+            ball_speed_x = 6
+        if ball_speed_x < -6:
+            ball_speed_x = -6
     #tarkista osuuko pallo vasempaan mailaan
     if ball.colliderect(p2_paddle):
         
         #muuttuja osuman sijainnille
-        collision_area = ball.y - p2_paddle.top
+        collision_area = (ball.centery - p2_paddle.top + ball_size // 2 -50) // 10
         
-        #tarkista osuman sijainti ja muuta nopeutta
-        if collision_area >=20 and collision_area < 35:
-            ball_speed_x = -ball_speed_x
-            ball_speed_y = ball_speed_y - 0.5
-        elif collision_area >=0 and collision_area < 20:
-            ball_speed_x = -ball_speed_x
-            ball_speed_y = ball_speed_y - 1        
-        elif collision_area < 0:
-            ball_speed_x = -ball_speed_x
-            if ball_speed_y < 0:
-                ball_speed_y = ball_speed_y - 1.5
-            else:
-                ball_speed_y = -ball_speed_y     
-        elif collision_area >65 and collision_area <= 80:
-            ball_speed_x = -ball_speed_x
-            ball_speed_y = ball_speed_y + 0.5
-        elif collision_area >80 and collision_area <= 100:
-            ball_speed_x = -ball_speed_x
-            ball_speed_y = ball_speed_y + 1        
-        elif collision_area > 100:
-            ball_speed_x = -ball_speed_x
-            if ball_speed_y > 0:
-                ball_speed_y = ball_speed_y + 1.5
-            else:
-                ball_speed_y = -ball_speed_y       
-        else:
-            ball_speed_x = -ball_speed_x
-        
+        # muuta nopeutta
+        ball_speed_x = -ball_speed_x
+        ball_speed_y = collision_area + ball_speed_y
+        print(collision_area, ball_speed_x, ball_speed_y)
     
+        #tarkista maksiminopeus
+        if ball_speed_y > 10:
+            ball_speed_y = 10
+        if ball_speed_y < -10:
+            ball_speed_y = -10
+        if ball_speed_x > 6:
+            ball_speed_x = 6
+        if ball_speed_x < -6:
+            ball_speed_x = -6
+
     #päivitä näyttö
     pygame.display.flip()
 
