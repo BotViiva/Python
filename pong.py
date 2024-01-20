@@ -25,7 +25,7 @@ scoreboard = [0, 0]
 
 
 #peliobjektit
-paddle_width, paddle_height = (20,100)
+paddle_width, paddle_height = (10,100)
 ball_size = (16)
 ball_speed_x = (3)
 ball_speed_y = (2)
