@@ -28,7 +28,7 @@ scoreboard = [0, 0]
 paddle_width, paddle_height = (20,100)
 ball_size = (16)
 ball_speed_x = (3)
-ball_speed_y = (0)
+ball_speed_y = (2)
 p1_paddle = pygame.Rect(window_size[0] - paddle_width, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
 p2_paddle = pygame.Rect(0, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
 ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
@@ -66,8 +66,14 @@ while run:
     ball.x += ball_speed_x
     ball.y += ball_speed_y
 
-    #tarkista osuiko pallo ylä- tai alaseinään 
-    if ball.bottom > window_size[1] or ball.top < 0 :
+    #tarkista osuiko pallo pohjaan 
+    if ball.bottom > window_size[1]:
+        ball = pygame.Rect(ball.x, window_size[1] - ball_size, ball_size, ball_size)
+        ball_speed_y = -ball_speed_y
+
+    #tarkista osuiko pallo kattoon
+    if ball.top < 0 :
+        ball = pygame.Rect(ball.x, 0 + ball_size , ball_size, ball_size)
         ball_speed_y = -ball_speed_y
 
     #tarkista osuiko pallo maaliin
