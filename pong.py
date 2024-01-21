@@ -18,6 +18,7 @@ def game_start():
 
     for index in countdown:
         window.fill((0, 0, 0,))
+        score()
         countdown_surf = text_font_big.render(str(index), False, (255, 255, 255))
         countdown_rect = countdown_surf.get_rect(center = (window_size[0] // 2, window_size[1] // 2))
         window.blit(countdown_surf, countdown_rect)
@@ -144,7 +145,7 @@ while run:
         ball_hit_times = 0
         ball_speed_x = 3
         if  scoreboard[1] < 3:
-            print("mjääy")
+
             game_start()
 
     #vasen maali
@@ -155,7 +156,7 @@ while run:
         ball_hit_times = 0
         ball_speed_x = -3
         if scoreboard[0] < 3:
-            print("mijau")
+
             game_start()
 
     #tarkista osuuko pallo oikeaan mailaan
