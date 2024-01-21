@@ -11,6 +11,16 @@ def score ():
     window.blit(score_p1_text, score_p1_rect)
     window.blit(score_p2_text, score_p2_rect)
     
+#pelaajien nimeäminen
+def player_naming_box():
+
+    
+    pygame.draw.rect(window, p1_color, p1_name_rect)
+    pygame.draw.rect(window, p2_color, p2_name_rect)
+    window.blit(p1_name_text, (p1_name_rect.x+5, p1_name_rect.y+5))
+    window.blit(p2_name_text, (p2_name_rect.x+5, p2_name_rect.y+5))
+    pygame.display.flip()    
+
 #aloitusnäyttö
 def start_screen ():
     window.fill((0,0,0))
@@ -21,7 +31,7 @@ def start_screen ():
     window.blit(p1_controls_info_text, p1_controls_info_rect)
     window.blit(p2_controls_info_text, p2_controls_info_rect)
     window.blit(start_space_text, start_space_rect)
-   
+
 
 #pelin aloitus
 def game_start():
@@ -76,8 +86,6 @@ text_font_small = pygame.font.Font('assets/Grand9K.ttf', 20)
 scoreboard = [0, 0]
 
 #aloitusnäytön muuttujat
-p1_name = "" #Oikea
-p2_name = "" #Vasen
 
 p1_controls = "ArrowUp = up, ArrowDown = down"
 p2_controls = "W = up, S = down"
@@ -98,6 +106,23 @@ p1_controls_info_text = text_font_small.render(p1_controls, False, (255, 255, 25
 p2_controls_info_text = text_font_small.render(p2_controls, False, (255, 255, 255))
 p1_controls_info_rect = p1_controls_info_text.get_rect(center = (window_size[0] // 2 + 200, controls_rect[2] + 100))
 p2_controls_info_rect = p2_controls_info_text.get_rect(center = (window_size[0] // 2 - 200, controls_rect[2] + 100))
+
+#pelaajan nimeämisen muuttujat
+p1_name = "Player 1" #Oikea
+p2_name = "Player 2" #Vasen
+p1_name_text = text_font_medium.render (p1_name, False, (255, 255, 255))
+p2_name_text = text_font_medium.render (p2_name, False, (255, 255, 255))
+p1_name_rect = p1_name_text.get_rect(topleft = (window_size[0] // 2 + 200, controls_rect[2]))
+p2_name_rect = p2_name_text.get_rect(topleft = (window_size[0] // 2 - 200, controls_rect[2]))
+p1_name_rect.w = max(100, p1_name_text.get_width()+10)
+p2_name_rect.w = max(100, p2_name_text.get_width()+10)
+p1_active = False
+p2_active = False
+p1_color_active = (100, 100, 100)
+p2_color_active = (100, 100, 100)
+p1_color_passive = (150, 150, 150)
+p2_color_passive = (150, 150, 150)
+
 
 #peliobjektit
 ball_size = 16
@@ -122,8 +147,59 @@ while run:
         if event.type == pygame.MOUSEBUTTONDOWN and start_rect.collidepoint(pygame.mouse.get_pos()) and game_active == False : #lisää tähän ehto: pelaajilla tulee olla nimet
             game_active = True
             game_start()
-        
+        if event.type == pygame.MOUSEBUTTONDOWN: 
+            
+            if p1_name_rect.collidepoint(event.pos): 
+                p1_active = True
+            else: 
+                p1_active = False
 
+        if event.type == pygame.MOUSEBUTTONDOWN: 
+            
+            if p2_name_rect.collidepoint(event.pos): 
+                p2_active = True
+            else: 
+                p2_active = False
+        if p1_active:
+            if event.type == pygame.KEYDOWN: 
+            
+                # Check for backspace 
+                if event.key == pygame.K_BACKSPACE: 
+                
+                    # get text input from 0 to -1 i.e. end. 
+                    p1_name = "" 
+                    print("Backspace")
+                    pygame.display.update(p1_name_rect)
+                #unicode palauttaa painetun näppäimen string-muodossta
+                else: 
+                    p1_name += event.unicode
+                    pygame.display.update(p1_name_rect)
+    
+                    print("painettu näppäintä player 1 nimessä", event.unicode, ",", p1_name)
+        if p2_active:
+            if event.type == pygame.KEYDOWN: 
+            
+                # Check for backspace 
+                if event.key == pygame.K_BACKSPACE: 
+                
+                    # get text input from 0 to -1 i.e. end. 
+                    p2_name = "" 
+                    pygame.display.update(p2_name_rect)
+                    print("Backspace")
+                #unicode palauttaa painetun näppäimen string-muodossta
+                else: 
+                    p2_name += event.unicode
+                    pygame.display.update(p2_name_rect)
+                    print("painettu näppäintä player 2 nimessä", event.unicode, ",", p2_name)
+                
+        if p1_active: 
+            p1_color = p1_color_active 
+        elif p2_active:
+            p2_color = p2_color_active
+        else:
+            p1_color = p1_color_passive
+            p2_color = p2_color_passive
+        
 
     #keys muuttuja (key.get_pressed() tarkkailee kaikkia painettuja nappeja) 
     keys = pygame.key.get_pressed()    
@@ -257,6 +333,7 @@ while run:
         ball_speed_x = 3
         ball_speed_y = 2
         
+        player_naming_box()
         start_screen()
 
         if keys[pygame.K_SPACE] :
