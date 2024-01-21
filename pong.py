@@ -1,3 +1,4 @@
+from timeit import Timer
 import pygame;
 from sys import exit
 
@@ -10,6 +11,17 @@ def score ():
     window.blit(score_p1_text, score_p1_rect)
     window.blit(score_p2_text, score_p2_rect)
     
+#aloitusnäyttö
+def start_screen ():
+    window.fill((0,0,0))
+    
+    window.blit(title_text, title_rect)
+    window.blit(start_text, start_rect)
+    window.blit(controls_text, controls_rect)
+    window.blit(p1_controls_info_text, p1_controls_info_rect)
+    window.blit(p2_controls_info_text, p2_controls_info_rect)
+    window.blit(start_space_text, start_space_rect)
+   
 
 #pelin aloitus
 def game_start():
@@ -32,18 +44,19 @@ def game_start():
         if index == "GO!":
             break
     
+#voittoruutu
+def win_screen():
+    #voittoruudun näyttöaika millisekunteina
+    current_time = 3000
+    while current_time > 0:
+        current_time -=1
 
-#aloitusnäyttö
-def start_screen ():
-    window.fill((0,0,0))
-    
-    window.blit(title_text, title_rect)
-    window.blit(start_text, start_rect)
-    window.blit(controls_text, controls_rect)
-    window.blit(p1_controls_info_text, p1_controls_info_rect)
-    window.blit(p2_controls_info_text, p2_controls_info_rect)
-    window.blit(start_space_text, start_space_rect)
-    
+        winner_text = text_font_big.render(f'{winner}' " wins!", False, (255,255,255))
+        winner_rect = winner_text.get_rect(center = (window_size[0] // 2, window_size[1] // 2))
+
+        window.fill ((0, 0, 0))
+        window.blit(winner_text, winner_rect)
+        pygame.display.flip()
 
 pygame.init()
 
@@ -51,7 +64,7 @@ pygame.init()
 window_size = (800,600)
 window = pygame.display.set_mode((window_size))
 window_rect = pygame.Rect(0,0,window_size[0],window_size[1])
-pygame.display.set_caption('Pong')
+pygame.display.set_caption('BonK')
 FPS = pygame.time.Clock()
 
 
@@ -63,10 +76,13 @@ text_font_small = pygame.font.Font('assets/Grand9K.ttf', 20)
 scoreboard = [0, 0]
 
 #aloitusnäytön muuttujat
+p1_name = "" #Oikea
+p2_name = "" #Vasen
+
 p1_controls = "ArrowUp = up, ArrowDown = down"
 p2_controls = "W = up, S = down"
 
-title_text = text_font_big.render('Bong!', False, (255, 255, 255))
+title_text = text_font_big.render('BonK!', False, (255, 255, 255))
 title_rect = title_text.get_rect(center = (window_size[0] // 2, window_size[1] // 8))
 
 start_text = text_font_medium.render('START', False, (255, 255, 255))
@@ -78,23 +94,23 @@ start_space_rect = start_space_text.get_rect( center = (window_size[0] // 2, win
 controls_text = text_font_medium.render('Controls:', False, (255, 255, 255))
 controls_rect = controls_text.get_rect( center = (window_size[0] // 2, window_size[1] // 3))
 
-
-
 p1_controls_info_text = text_font_small.render(p1_controls, False, (255, 255, 255))
 p2_controls_info_text = text_font_small.render(p2_controls, False, (255, 255, 255))
 p1_controls_info_rect = p1_controls_info_text.get_rect(center = (window_size[0] // 2 + 200, controls_rect[2] + 100))
 p2_controls_info_rect = p2_controls_info_text.get_rect(center = (window_size[0] // 2 - 200, controls_rect[2] + 100))
 
 #peliobjektit
-paddle_width, paddle_height = (10,100)
 ball_size = 16
 ball_speed_x = 3
 ball_speed_y = 2
-p1_paddle = pygame.Rect(window_size[0] - paddle_width, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
-p2_paddle = pygame.Rect(0, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
 ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
 ball_hit_times = 0
 
+paddle_width, paddle_height = (10,100)
+p1_paddle = pygame.Rect(window_size[0] - paddle_width, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
+p2_paddle = pygame.Rect(0, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
+
+winner = ""
 
 while run:
 
@@ -103,9 +119,10 @@ while run:
         if event.type == pygame.QUIT:
             run = False
             exit()
-        if event.type == pygame.MOUSEBUTTONDOWN and start_rect.collidepoint(pygame.mouse.get_pos()) and game_active == False :
+        if event.type == pygame.MOUSEBUTTONDOWN and start_rect.collidepoint(pygame.mouse.get_pos()) and game_active == False : #lisää tähän ehto: pelaajilla tulee olla nimet
             game_active = True
             game_start()
+        
 
 
     #keys muuttuja (key.get_pressed() tarkkailee kaikkia painettuja nappeja) 
@@ -145,7 +162,7 @@ while run:
         ball_hit_times = 0
         ball_speed_x = 3
         if  scoreboard[1] < 3:
-
+            winner = p2_name
             game_start()
 
     #vasen maali
@@ -156,7 +173,7 @@ while run:
         ball_hit_times = 0
         ball_speed_x = -3
         if scoreboard[0] < 3:
-
+            winner = p1_name
             game_start()
 
     #tarkista osuuko pallo oikeaan mailaan
@@ -222,6 +239,14 @@ while run:
     #päivitä näyttö
     pygame.display.flip()
 
+
+
+
+
+
+
+
+
     #piirrä aloitusnäyttö
     if game_active == False:
         
@@ -238,6 +263,7 @@ while run:
             game_active = True
             game_start()
 
+
     #piirrä peli
     if game_active:
         
@@ -252,9 +278,8 @@ while run:
         ball.x += ball_speed_x
         ball.y += ball_speed_y
     
-    if scoreboard[0] == 3:
-        game_active = False
-    if scoreboard[1] == 3:
+    if scoreboard[0] == 3 or scoreboard[1] == 3:
+        win_screen()
         game_active = False
 
     
