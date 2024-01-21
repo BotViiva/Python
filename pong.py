@@ -102,7 +102,7 @@ while run:
         if event.type == pygame.QUIT:
             run = False
             exit()
-        if event.type == pygame.MOUSEBUTTONDOWN and start_rect.collidepoint(pygame.mouse.get_pos()) :
+        if event.type == pygame.MOUSEBUTTONDOWN and start_rect.collidepoint(pygame.mouse.get_pos()) and game_active == False :
             game_active = True
             game_start()
 
@@ -224,7 +224,7 @@ while run:
     #piirrä aloitusnäyttö
     if game_active == False:
         
-        #nollaa edellisen pelin tiedot
+        #nollaa edellisen pelin tapahtumat
         p1_paddle = pygame.Rect(window_size[0] - paddle_width, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
         p2_paddle = pygame.Rect(0, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
         scoreboard = [0,0]
