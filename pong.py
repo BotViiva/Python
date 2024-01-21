@@ -1,3 +1,4 @@
+
 import pygame;
 from sys import exit
 
@@ -30,6 +31,7 @@ window_size = (800,600)
 window = pygame.display.set_mode((window_size))
 pygame.display.set_caption('Pong')
 FPS = pygame.time.Clock()
+
 
 run = True
 game_active = False
@@ -67,10 +69,10 @@ ball_speed_y = (2)
 p1_paddle = pygame.Rect(window_size[0] - paddle_width, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
 p2_paddle = pygame.Rect(0, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
 ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
+ball_hit_times = 0
 
 
 while run:
-
     #tapa poistua loopista
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -111,17 +113,27 @@ while run:
     if ball.x > window_size[0] - ball_size:
         ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
         scoreboard[1] = scoreboard[1] + 1
-        pygame.time.delay(2000)
+        pygame.time.delay(1000)
+        ball_hit_times = 0
 
     if ball.x < 0 :
         ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
         scoreboard[0] = scoreboard[0] + 1
-        pygame.time.delay(2000)
-
+        pygame.time.delay(1000)
+        ball_hit_times = 0
 
 
     #tarkista osuuko pallo oikeaan mailaan
     if ball.colliderect(p1_paddle):
+        
+        ball_hit_times += 1
+        if ball_hit_times == 2 :
+            ball_speed_x -= 1
+            ball_hit_times = 0
+        if ball_hit_times == -2:
+            ball_speed_x -= 1
+            ball_hit_times = 0
+        print(ball_hit_times, ball_speed_x)
         
         #muuttuja osuman sijainnille (tulos = -5/-4/-3/-2/-1/0/1/2/3/4/5/6)
         collision_area = (ball.centery - p1_paddle.top + ball_size // 2 -50) // 10
@@ -145,6 +157,15 @@ while run:
     #tarkista osuuko pallo vasempaan mailaan
     if ball.colliderect(p2_paddle):
         
+        ball_hit_times += 1
+        if ball_hit_times == 2:
+            ball_speed_x -= 1
+            ball_hit_times = 0
+        if ball_hit_times == -2:
+            ball_speed_x -= 1
+            ball_hit_times = 0
+        print(ball_hit_times, ball_speed_x)
+       
         #muuttuja osuman sijainnille
         collision_area = (ball.centery - p2_paddle.top + ball_size // 2 -50) // 10
         # muuta suuntaa
@@ -177,10 +198,9 @@ while run:
         
         
 
-    #piirrä itse peli
+    #piirrä peli
     if game_active:
 
-        
         window.fill((0, 0, 0))
         pygame.draw.line(window, (255, 255, 255), (window_size[0] // 2, 0), (window_size[0] // 2, window_size[1]))
         pygame.draw.rect(window, (255, 255, 255), p2_paddle)
