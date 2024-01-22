@@ -1,4 +1,4 @@
-from timeit import Timer
+from random import randint
 import pygame;
 from sys import exit
 
@@ -13,13 +13,19 @@ def score ():
     
 #pelaajien nimeäminen
 def player_naming_box():
-
+    
+    p1_name_text = text_font_medium.render (p1_name, False, (255, 255, 255))
+    p2_name_text = text_font_medium.render (p2_name, False, (255, 255, 255))
+    p1_name_rect.w = max(100, p1_name_text.get_width()+10)
+    p2_name_rect.w = max(100, p2_name_text.get_width()+10)
     
     pygame.draw.rect(window, p1_color, p1_name_rect)
     pygame.draw.rect(window, p2_color, p2_name_rect)
-    window.blit(p1_name_text, (p1_name_rect.x+5, p1_name_rect.y+5))
-    window.blit(p2_name_text, (p2_name_rect.x+5, p2_name_rect.y+5))
-    pygame.display.flip()    
+
+    window.blit(p1_name_text, (p1_name_rect.x+5, p1_name_rect.y-8))    
+    window.blit(p2_name_text, (p2_name_rect.x+5, p2_name_rect.y-8))
+    
+    pygame.display.flip()
 
 #aloitusnäyttö
 def start_screen ():
@@ -57,7 +63,7 @@ def game_start():
 #voittoruutu
 def win_screen():
     #voittoruudun näyttöaika millisekunteina
-    current_time = 3000
+    current_time = 5000
     while current_time > 0:
         current_time -=1
 
@@ -105,17 +111,15 @@ controls_rect = controls_text.get_rect( center = (window_size[0] // 2, window_si
 p1_controls_info_text = text_font_small.render(p1_controls, False, (255, 255, 255))
 p2_controls_info_text = text_font_small.render(p2_controls, False, (255, 255, 255))
 p1_controls_info_rect = p1_controls_info_text.get_rect(center = (window_size[0] // 2 + 200, controls_rect[2] + 100))
-p2_controls_info_rect = p2_controls_info_text.get_rect(center = (window_size[0] // 2 - 200, controls_rect[2] + 100))
+p2_controls_info_rect = p2_controls_info_text.get_rect(center = (window_size[0] // 2 - 220, controls_rect[2] + 100))
 
 #pelaajan nimeämisen muuttujat
 p1_name = "Player 1" #Oikea
 p2_name = "Player 2" #Vasen
-p1_name_text = text_font_medium.render (p1_name, False, (255, 255, 255))
-p2_name_text = text_font_medium.render (p2_name, False, (255, 255, 255))
-p1_name_rect = p1_name_text.get_rect(topleft = (window_size[0] // 2 + 200, controls_rect[2]))
-p2_name_rect = p2_name_text.get_rect(topleft = (window_size[0] // 2 - 200, controls_rect[2]))
-p1_name_rect.w = max(100, p1_name_text.get_width()+10)
-p2_name_rect.w = max(100, p2_name_text.get_width()+10)
+
+p1_name_rect = pygame.Rect(window_size[0] // 2 + 200, window_size[1] // 2, 300, 36)
+p2_name_rect = pygame.Rect(window_size[0] // 2 - 300, window_size[1] // 2, 300, 36)
+
 p1_active = False
 p2_active = False
 p1_color_active = (100, 100, 100)
@@ -144,12 +148,13 @@ while run:
         if event.type == pygame.QUIT:
             run = False
             exit()
-        if event.type == pygame.MOUSEBUTTONDOWN and start_rect.collidepoint(pygame.mouse.get_pos()) and game_active == False : #lisää tähän ehto: pelaajilla tulee olla nimet
+        if event.type == pygame.MOUSEBUTTONDOWN and start_rect.collidepoint(pygame.mouse.get_pos()) and game_active == False and p2_name !="" and p1_name !="" : #lisää tähän ehto: pelaajilla tulee olla nimet
             game_active = True
             game_start()
         if event.type == pygame.MOUSEBUTTONDOWN: 
             
-            if p1_name_rect.collidepoint(event.pos): 
+            if p1_name_rect.collidepoint(event.pos):
+                p1_name = ""
                 p1_active = True
             else: 
                 p1_active = False
@@ -157,48 +162,47 @@ while run:
         if event.type == pygame.MOUSEBUTTONDOWN: 
             
             if p2_name_rect.collidepoint(event.pos): 
+                p2_name = ""
                 p2_active = True
             else: 
                 p2_active = False
         if p1_active:
             if event.type == pygame.KEYDOWN: 
             
-                # Check for backspace 
+                # tarkista backspace
                 if event.key == pygame.K_BACKSPACE: 
                 
-                    # get text input from 0 to -1 i.e. end. 
-                    p1_name = "" 
-                    print("Backspace")
-                    pygame.display.update(p1_name_rect)
+                    # tyhjennä nimi 
+                    p1_name = p1_name[:-1] 
                 #unicode palauttaa painetun näppäimen string-muodossta
                 else: 
                     p1_name += event.unicode
-                    pygame.display.update(p1_name_rect)
-    
-                    print("painettu näppäintä player 1 nimessä", event.unicode, ",", p1_name)
         if p2_active:
             if event.type == pygame.KEYDOWN: 
             
-                # Check for backspace 
+                # tarkista backspace
                 if event.key == pygame.K_BACKSPACE: 
                 
-                    # get text input from 0 to -1 i.e. end. 
-                    p2_name = "" 
-                    pygame.display.update(p2_name_rect)
-                    print("Backspace")
+                    # tyhjennä nimi 
+                    p2_name = p2_name[:-1] 
                 #unicode palauttaa painetun näppäimen string-muodossta
                 else: 
                     p2_name += event.unicode
-                    pygame.display.update(p2_name_rect)
-                    print("painettu näppäintä player 2 nimessä", event.unicode, ",", p2_name)
                 
         if p1_active: 
-            p1_color = p1_color_active 
+            p1_color = p1_color_active
+            p2_color = p2_color_passive
+            if event.type == pygame.K_KP_ENTER:
+                p1_active = False
         elif p2_active:
             p2_color = p2_color_active
+            p1_color = p1_color_passive
+            if event.type == pygame.K_KP_ENTER:
+                p2_active = False
         else:
             p1_color = p1_color_passive
             p2_color = p2_color_passive
+        
         
 
     #keys muuttuja (key.get_pressed() tarkkailee kaikkia painettuja nappeja) 
@@ -237,6 +241,7 @@ while run:
         pygame.time.delay(500)
         ball_hit_times = 0
         ball_speed_x = 3
+        ball_speed_y = randint(-4,4)
         if  scoreboard[1] < 3:
             winner = p2_name
             game_start()
@@ -248,6 +253,7 @@ while run:
         pygame.time.delay(500)
         ball_hit_times = 0
         ball_speed_x = -3
+        ball_speed_y = randint(-4,4)
         if scoreboard[0] < 3:
             winner = p1_name
             game_start()
@@ -307,10 +313,10 @@ while run:
             ball_speed_y = 10
         if ball_speed_y < -10:
             ball_speed_y = -10
-        if ball_speed_x > 6:
-            ball_speed_x = 6
-        if ball_speed_x < -6:
-            ball_speed_x = -6
+        if ball_speed_x > 8:
+            ball_speed_x = 8
+        if ball_speed_x < -8:
+            ball_speed_x = 8
 
     #päivitä näyttö
     pygame.display.flip()
@@ -333,13 +339,17 @@ while run:
         ball_speed_x = 3
         ball_speed_y = 2
         
-        player_naming_box()
+
+        
         start_screen()
+        player_naming_box()
+
+        if p1_active or p2_active :
+            player_naming_box()
 
         if keys[pygame.K_SPACE] :
             game_active = True
             game_start()
-
 
     #piirrä peli
     if game_active:
