@@ -59,7 +59,16 @@ def game_start():
         print(index)
         if index == "GO!":
             break
-    
+#maaliäänet
+def goal_sound():
+    goal_1 = pygame.mixer.Sound("assets/goal_1.wav")
+    goal_2 = pygame.mixer.Sound("assets/goal_2.wav")
+    goal_3 = pygame.mixer.Sound("assets/goal_3.wav")
+    goal_4 = pygame.mixer.Sound("assets/goal_4.wav")
+    goal = [goal_1, goal_2, goal_3, goal_4]
+
+    goal[randint(0,3)].play()
+
 #voittoruutu
 def win_screen():
     #voittoruudun näyttöaika millisekunteina
@@ -134,7 +143,8 @@ ball_speed_x = 3
 ball_speed_y = 2
 ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
 ball_hit_times = 0
-
+hit_sound_1 = pygame.mixer.Sound('assets/paddle_1.wav')
+hit_sound_2 = pygame.mixer.Sound('assets/paddle_2.wav')
 paddle_width, paddle_height = (10,100)
 p1_paddle = pygame.Rect(window_size[0] - paddle_width, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
 p2_paddle = pygame.Rect(0, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
@@ -238,10 +248,17 @@ while run:
     if ball.x > window_size[0] - ball_size:
         scoreboard[1] = scoreboard[1] + 1
         ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
-        pygame.time.delay(500)
+
         ball_hit_times = 0
         ball_speed_x = 3
         ball_speed_y = randint(-4,4)
+        goal_sound()
+
+        timer = 2000
+        while timer >0:
+            timer -=1
+            pygame.display.flip()
+
         if  scoreboard[1] < 3:
             winner = p2_name
             game_start()
@@ -250,10 +267,17 @@ while run:
     if ball.x < 0 :
         scoreboard[0] = scoreboard[0] + 1
         ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
-        pygame.time.delay(500)
+
         ball_hit_times = 0
         ball_speed_x = -3
         ball_speed_y = randint(-4,4)
+        goal_sound()
+
+        timer = 2000
+        while timer >0:
+            timer -=1
+            pygame.display.flip()
+
         if scoreboard[0] < 3:
             winner = p1_name
             game_start()
@@ -269,6 +293,9 @@ while run:
             ball_speed_x -= 1
             ball_hit_times = 0
         print(ball_hit_times, ball_speed_x)
+
+        #ääni
+        hit_sound_1.play()
         
         #muuttuja osuman sijainnille (tulos = -5/-4/-3/-2/-1/0/1/2/3/4/5/6)
         collision_area = (ball.centery - p1_paddle.top + ball_size // 2 -50) // 10
@@ -300,7 +327,10 @@ while run:
             ball_speed_x -= 1
             ball_hit_times = 0
         print(ball_hit_times, ball_speed_x)
-       
+
+        #ääni
+        hit_sound_2.play()
+
         #muuttuja osuman sijainnille
         collision_area = (ball.centery - p2_paddle.top + ball_size // 2 -50) // 10
         # muuta suuntaa
