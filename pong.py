@@ -38,7 +38,6 @@ def start_screen ():
     window.blit(p2_controls_info_text, p2_controls_info_rect)
     window.blit(start_space_text, start_space_rect)
 
-
 #pelin aloitus
 def game_start():
     countdown = [3, 2, 1, "GO!"]
@@ -46,17 +45,24 @@ def game_start():
 
     for index in countdown:
         window.fill((0, 0, 0,))
-        score()
         countdown_surf = text_font_big.render(str(index), False, (255, 255, 255))
-        countdown_rect = countdown_surf.get_rect(center = (window_size[0] // 2, window_size[1] // 2))
-        window.blit(countdown_surf, countdown_rect)
+        countdown_rect = countdown_surf.get_rect(center = (window_size[0] // 2, window_size[1] // 2 - 100))
+        countdown_rect_background = pygame.Rect(window_size[0]//2 - 70,window_size[1]//2 -130,140,70)
+
+        score()
+
+        
         pygame.draw.line(window, (255, 255, 255), (window_size[0] // 2, 0), (window_size[0] // 2, window_size[1]))
         pygame.draw.rect(window, (255, 255, 255), p2_paddle)
         pygame.draw.rect(window, (255, 255, 255), p1_paddle)
         pygame.draw.ellipse(window, (255, 255, 255), ball)
+        pygame.draw.rect(window, (0,0,0), countdown_rect_background)
+        window.blit(countdown_surf, countdown_rect)
         pygame.display.update()
-        pygame.time.wait(1000)
-        print(index)
+        timer = 2000
+        while timer >0:
+            timer -=1
+            pygame.display.flip()
         if index == "GO!":
             break
 #maaliäänet
@@ -140,7 +146,7 @@ p2_color_passive = (150, 150, 150)
 #peliobjektit
 ball_size = 16
 ball_speed_x = 3
-ball_speed_y = 2
+ball_speed_y = 3
 ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
 ball_hit_times = 0
 hit_sound_1 = pygame.mixer.Sound('assets/paddle_1.wav')
@@ -284,15 +290,17 @@ while run:
 
     #tarkista osuuko pallo oikeaan mailaan
     if ball.colliderect(p1_paddle):
+        print(ball_speed_x)
         
+        #muuta pallon x-nopeutta
         ball_hit_times += 1
-        if ball_hit_times == 2 :
-            ball_speed_x -= 1
-            ball_hit_times = 0
-        if ball_hit_times == -2:
-            ball_speed_x -= 1
-            ball_hit_times = 0
-        print(ball_hit_times, ball_speed_x)
+        if ball_hit_times == 2 or -2 :
+            if ball_speed_x >= 3:
+                ball_speed_x += 1
+                ball_hit_times = 0
+            else:
+                ball_speed_x -= 1
+                ball_hit_times = 0
 
         #ääni
         hit_sound_1.play()
@@ -300,64 +308,74 @@ while run:
         #muuttuja osuman sijainnille (tulos = -5/-4/-3/-2/-1/0/1/2/3/4/5/6)
         collision_area = (ball.centery - p1_paddle.top + ball_size // 2 -50) // 10
         
-        #muuta suuntaa
-        ball_speed_x = -ball_speed_x
-        
-        #muuta nopeutta
-        ball_speed_y = collision_area + ball_speed_y
         
         #tarkista maksiminopeus
         if ball_speed_y > 10:
             ball_speed_y = 10
         if ball_speed_y < -10:
             ball_speed_y = -10
-        if ball_speed_x > 6:
-            ball_speed_x = 6
-        if ball_speed_x < -6:
-            ball_speed_x = -6
+        if ball_speed_x > 7:
+            ball_speed_x = 7
+        if ball_speed_x < -7:
+            ball_speed_x = -7
+
+        #tarkista miniminopeus x:lle
+        if ball_speed_x == 3:
+            ball_speed_x = 4
+        if ball_speed_x == -3:
+            ball_speed_x = -4
+        # muuta suuntaa
+        ball_speed_x = -ball_speed_x
+        # muuta nopeutta
+        ball_speed_y = collision_area + ball_speed_y
+        print(ball_speed_x)
 
     #tarkista osuuko pallo vasempaan mailaan
     if ball.colliderect(p2_paddle):
+        print(ball_speed_x)
         
+        #muuta pallon x-nopeutta
         ball_hit_times += 1
-        if ball_hit_times == 2:
-            ball_speed_x -= 1
-            ball_hit_times = 0
-        if ball_hit_times == -2:
-            ball_speed_x -= 1
-            ball_hit_times = 0
-        print(ball_hit_times, ball_speed_x)
+        if ball_hit_times == 2 or -2 :
+            if ball_speed_x >= 3:
+                ball_speed_x += 1
+                ball_hit_times = 0
+            else:
+                ball_speed_x -= 1
+                ball_hit_times = 0
 
         #ääni
         hit_sound_2.play()
 
         #muuttuja osuman sijainnille
         collision_area = (ball.centery - p2_paddle.top + ball_size // 2 -50) // 10
-        # muuta suuntaa
-        ball_speed_x = -ball_speed_x
-        # muuta nopeutta
-        ball_speed_y = collision_area + ball_speed_y
+        
+        
     
         #tarkista maksiminopeus
         if ball_speed_y > 10:
             ball_speed_y = 10
         if ball_speed_y < -10:
             ball_speed_y = -10
-        if ball_speed_x > 8:
-            ball_speed_x = 8
-        if ball_speed_x < -8:
-            ball_speed_x = 8
+        if ball_speed_x > 7:
+            ball_speed_x = 7
+        if ball_speed_x < -7:
+            ball_speed_x = -7
 
+        #tarkista miniminopeus x:lle
+        if ball_speed_x == 3:
+            ball_speed_x = 4
+        if ball_speed_x == -3:
+            ball_speed_x = -4
+
+        # muuta suuntaa
+        ball_speed_x = -ball_speed_x
+        # muuta nopeutta
+        ball_speed_y = collision_area + ball_speed_y
+        print(ball_speed_x)
+    
     #päivitä näyttö
     pygame.display.flip()
-
-
-
-
-
-
-
-
 
     #piirrä aloitusnäyttö
     if game_active == False:
@@ -367,7 +385,7 @@ while run:
         p2_paddle = pygame.Rect(0, window_size[1] // 2 - paddle_height // 2, paddle_width, paddle_height)
         scoreboard = [0,0]
         ball_speed_x = 3
-        ball_speed_y = 2
+        ball_speed_y = 3
         
 
         
