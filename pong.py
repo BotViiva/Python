@@ -42,27 +42,22 @@ def start_screen ():
 def game_start():
     countdown = [3, 2, 1, "GO!"]
     
-
     for index in countdown:
+
         window.fill((0, 0, 0,))
         countdown_surf = text_font_big.render(str(index), False, (255, 255, 255))
-        countdown_rect = countdown_surf.get_rect(center = (window_size[0] // 2, window_size[1] // 2 - 100))
         countdown_rect_background = pygame.Rect(window_size[0]//2 - 70,window_size[1]//2 -130,140,70)
-
+        countdown_rect = countdown_surf.get_rect(center = (window_size[0] // 2, window_size[1] // 2 - 100))
         score()
-
-        
         pygame.draw.line(window, (255, 255, 255), (window_size[0] // 2, 0), (window_size[0] // 2, window_size[1]))
         pygame.draw.rect(window, (255, 255, 255), p2_paddle)
         pygame.draw.rect(window, (255, 255, 255), p1_paddle)
         pygame.draw.ellipse(window, (255, 255, 255), ball)
         pygame.draw.rect(window, (0,0,0), countdown_rect_background)
+        
         window.blit(countdown_surf, countdown_rect)
-        pygame.display.update()
-        timer = 2000
-        while timer >0:
-            timer -=1
-            pygame.display.flip()
+        pygame.display.flip()
+        pygame.time.wait(1000)
         if index == "GO!":
             break
 #maaliäänet
@@ -72,7 +67,7 @@ def goal_sound():
     goal_3 = pygame.mixer.Sound("assets/goal_3.wav")
     goal_4 = pygame.mixer.Sound("assets/goal_4.wav")
     goal = [goal_1, goal_2, goal_3, goal_4]
-
+    
     goal[randint(0,3)].play()
 
 #voittoruutu
@@ -95,7 +90,7 @@ pygame.init()
 window_size = (800,600)
 window = pygame.display.set_mode((window_size))
 window_rect = pygame.Rect(0,0,window_size[0],window_size[1])
-pygame.display.set_caption('BonK')
+pygame.display.set_caption('BonK!')
 FPS = pygame.time.Clock()
 
 
@@ -252,37 +247,28 @@ while run:
     
     #oikea maali
     if ball.x > window_size[0] - ball_size:
+        goal_sound()
         scoreboard[1] = scoreboard[1] + 1
         ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
-
         ball_hit_times = 0
         ball_speed_x = 3
         ball_speed_y = randint(-4,4)
-        goal_sound()
-
-        timer = 2000
-        while timer >0:
-            timer -=1
-            pygame.display.flip()
-
+        pygame.time.wait(1500)
         if  scoreboard[1] < 3:
             winner = p2_name
             game_start()
 
     #vasen maali
     if ball.x < 0 :
-        scoreboard[0] = scoreboard[0] + 1
-        ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
 
+        goal_sound()
+        scoreboard[0] = scoreboard[0] + 1
+
+        ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
         ball_hit_times = 0
         ball_speed_x = -3
         ball_speed_y = randint(-4,4)
-        goal_sound()
-
-        timer = 2000
-        while timer >0:
-            timer -=1
-            pygame.display.flip()
+        pygame.time.wait(1500)
 
         if scoreboard[0] < 3:
             winner = p1_name
@@ -290,7 +276,6 @@ while run:
 
     #tarkista osuuko pallo oikeaan mailaan
     if ball.colliderect(p1_paddle):
-        print(ball_speed_x)
         
         #muuta pallon x-nopeutta
         ball_hit_times += 1
@@ -332,7 +317,6 @@ while run:
 
     #tarkista osuuko pallo vasempaan mailaan
     if ball.colliderect(p2_paddle):
-        print(ball_speed_x)
         
         #muuta pallon x-nopeutta
         ball_hit_times += 1
@@ -349,8 +333,6 @@ while run:
 
         #muuttuja osuman sijainnille
         collision_area = (ball.centery - p2_paddle.top + ball_size // 2 -50) // 10
-        
-        
     
         #tarkista maksiminopeus
         if ball_speed_y > 10:
@@ -370,7 +352,7 @@ while run:
 
         # muuta suuntaa
         ball_speed_x = -ball_speed_x
-        # muuta nopeutta
+        # muuta y-nopeutta
         ball_speed_y = collision_area + ball_speed_y
         print(ball_speed_x)
     
@@ -386,14 +368,9 @@ while run:
         scoreboard = [0,0]
         ball_speed_x = 3
         ball_speed_y = 3
-        
-
-        
+                
         start_screen()
         player_naming_box()
-
-        if p1_active or p2_active :
-            player_naming_box()
 
         if keys[pygame.K_SPACE] :
             game_active = True
@@ -402,8 +379,6 @@ while run:
     #piirrä peli
     if game_active:
         
-        
-
         window.fill((0, 0, 0))
         pygame.draw.line(window, (255, 255, 255), (window_size[0] // 2, 0), (window_size[0] // 2, window_size[1]))
         pygame.draw.rect(window, (255, 255, 255), p2_paddle)
@@ -417,8 +392,6 @@ while run:
         win_screen()
         game_active = False
 
-    
-    
     
     #rajoittaa framet 60:een
     FPS.tick(60)
