@@ -2,6 +2,7 @@ from random import randint
 import pygame;
 from sys import exit
 
+
 #pistetaulun luonti
 def score ():
     score_p1_text = text_font_big.render(f'{scoreboard[1]}', False, (255, 255, 255))
@@ -29,15 +30,17 @@ def player_naming_box():
 
 #aloitusnäyttö
 def start_screen ():
+
     window.fill((0,0,0))
-    
+
     window.blit(title_text, title_rect)
     window.blit(start_text, start_rect)
     window.blit(controls_text, controls_rect)
     window.blit(p1_controls_info_text, p1_controls_info_rect)
     window.blit(p2_controls_info_text, p2_controls_info_rect)
     window.blit(start_space_text, start_space_rect)
-
+    title_rect.move_ip(title_move,0)
+ 
 #pelin aloitus
 def game_start():
     countdown = [3, 2, 1, "GO!"]
@@ -108,6 +111,7 @@ p2_controls = "W = up, S = down"
 
 title_text = text_font_big.render('BonK!', False, (255, 255, 255))
 title_rect = title_text.get_rect(center = (window_size[0] // 2, window_size[1] // 8))
+title_move = 1
 
 start_text = text_font_medium.render('START', False, (255, 255, 255))
 start_rect = start_text.get_rect(center = (window_size[0] // 2, window_size[1] - 100))
@@ -159,7 +163,7 @@ while run:
         if event.type == pygame.QUIT:
             run = False
             exit()
-        if event.type == pygame.MOUSEBUTTONDOWN and start_rect.collidepoint(pygame.mouse.get_pos()) and game_active == False and p2_name !="" and p1_name !="" : #lisää tähän ehto: pelaajilla tulee olla nimet
+        if event.type == pygame.MOUSEBUTTONDOWN and start_rect.collidepoint(pygame.mouse.get_pos()) and game_active == False and p2_name !="" and p1_name !="" :
             game_active = True
             game_start()
         if event.type == pygame.MOUSEBUTTONDOWN: 
@@ -246,7 +250,7 @@ while run:
     #tarkista osuiko pallo maaliin
     
     #oikea maali
-    if ball.x > window_size[0] - ball_size:
+    if ball.x >= window_size[0] - ball_size:
         goal_sound()
         scoreboard[1] = scoreboard[1] + 1
         ball = pygame.Rect(window_size[0] // 2 - ball_size // 2, window_size[1] // 2 - ball_size // 2, ball_size, ball_size)
@@ -313,7 +317,6 @@ while run:
         ball_speed_x = -ball_speed_x
         # muuta nopeutta
         ball_speed_y = collision_area + ball_speed_y
-        print(ball_speed_x)
 
     #tarkista osuuko pallo vasempaan mailaan
     if ball.colliderect(p2_paddle):
@@ -354,7 +357,6 @@ while run:
         ball_speed_x = -ball_speed_x
         # muuta y-nopeutta
         ball_speed_y = collision_area + ball_speed_y
-        print(ball_speed_x)
     
     #päivitä näyttö
     pygame.display.flip()
@@ -368,26 +370,36 @@ while run:
         scoreboard = [0,0]
         ball_speed_x = 3
         ball_speed_y = 3
-                
+
+        #muuttaa otsikon liikkumissuuntaa
+        if title_rect.x == 320 or title_rect.x == 270:
+            title_move *= -1
+        
+        #piirtää aloitusnäytön
         start_screen()
         player_naming_box()
 
-        if keys[pygame.K_SPACE] :
+        #käynnistää pelin
+        if keys[pygame.K_SPACE] and p2_name !="" and p1_name !="" :
             game_active = True
             game_start()
 
     #piirrä peli
     if game_active:
         
+        #liikuttaa palloa
+        ball.y += ball_speed_y
+        ball.x += ball_speed_x
+        
+        #piirtää peliobjektit
         window.fill((0, 0, 0))
         pygame.draw.line(window, (255, 255, 255), (window_size[0] // 2, 0), (window_size[0] // 2, window_size[1]))
         pygame.draw.rect(window, (255, 255, 255), p2_paddle)
         pygame.draw.rect(window, (255, 255, 255), p1_paddle)
         pygame.draw.ellipse(window, (255, 255, 255), ball)
         score()
-        ball.x += ball_speed_x
-        ball.y += ball_speed_y
     
+    #voittoehto
     if scoreboard[0] == 3 or scoreboard[1] == 3:
         win_screen()
         game_active = False
