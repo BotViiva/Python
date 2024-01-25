@@ -292,7 +292,7 @@ while run:
                 ball_hit_times = 0
 
         #ääni
-        hit_sound_1.play()
+        hit_sound_2.play()
         
         #muuttuja osuman sijainnille (tulos = -5/-4/-3/-2/-1/0/1/2/3/4/5/6)
         collision_area = (ball.centery - p1_paddle.top + ball_size // 2 -50) // 10
@@ -332,7 +332,7 @@ while run:
                 ball_hit_times = 0
 
         #ääni
-        hit_sound_2.play()
+        hit_sound_1.play()
 
         #muuttuja osuman sijainnille
         collision_area = (ball.centery - p2_paddle.top + ball_size // 2 -50) // 10
